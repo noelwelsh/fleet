@@ -13,22 +13,26 @@ object FleetBuild extends Build {
     "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
   )
 
-  val fleetSettings = Seq(
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" % "akka-actor" % "2.0.2"
-    )
-  )
-
   lazy val scalaz        = "org.scalaz"              %% "scalaz-core"     % "7.0-SNAPSHOT"
   lazy val specs2        = "org.specs2"              %% "specs2"          % "1.8.1"
   lazy val scalacheck    = "org.scala-tools.testing" %% "scalacheck"      % "1.9"
+  lazy val guava         = "com.google.guava"        %  "guava"           % "12.0"
+  lazy val akka          = "com.typesafe.akka"       %  "akka-actor"      % "2.0.2"
+
+  val fleetSettings = Seq(
+    libraryDependencies ++= Seq(
+      akka,
+      guava
+    )
+  )
+
 
   lazy val fleet = Project(
     id = "fleet",
     base = file(".")
   ).settings(
     Project.defaultSettings ++
-    fleetSettings
+    fleetSettings : _*
   )
 
 }
