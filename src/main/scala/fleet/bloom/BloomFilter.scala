@@ -1,8 +1,8 @@
 package fleet
 package bloom
 
-import fleet.hash.hash._
-import scala.collection.BitSet
+import fleet.hash.Hash32
+import scala.collection.mutable.BitSet
 
 class BloomFilter[A](size: Int, nHashes: Int, hash: Hash32[A]) {
 
@@ -22,7 +22,7 @@ class BloomFilter[A](size: Int, nHashes: Int, hash: Hash32[A]) {
 
   def clear(): Unit = bitSet.clear()
 
-  def contains(element: A): Boolean = {
+  def contains(elt: A): Boolean = {
     foldHashes(elt, true) {
       case (hash, wasPresent) =>
         wasPresent && bitSet.contains(hash)
@@ -37,7 +37,7 @@ class BloomFilter[A](size: Int, nHashes: Int, hash: Hash32[A]) {
 
     var accum = seed
     for(i <- 0 until nHashes) {
-      val hash = (hash0 + (i * hash1)) mod size
+      val hash = (hash0 + (i * hash1)) % size
       accum = f(hash, accum)
     }
 

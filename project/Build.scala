@@ -7,10 +7,11 @@ object FleetBuild extends Build {
   val fleetVersion = "0.1"
 
   lazy val fleetResolvers = Seq(
-    "Sonatype"            at "http://oss.sonatype.org/content/repositories/releases",
-    "JBoss"               at "http://repository.jboss.org/nexus/content/groups/public",
-    "Untyped"             at "http://repo.untyped.com/",
-    "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+    "Sonatype"      at "http://oss.sonatype.org/content/repositories/releases",
+    "Sonatype Snap" at "http://oss.sonatype.org/content/repositories/snapshots",
+    "JBoss"         at "http://repository.jboss.org/nexus/content/groups/public",
+    "Untyped"       at "http://repo.untyped.com/",
+    "Typesafe"      at "http://repo.typesafe.com/typesafe/releases/"
   )
 
   lazy val scalaz        = "org.scalaz"              %% "scalaz-core"     % "7.0-SNAPSHOT"
@@ -22,8 +23,10 @@ object FleetBuild extends Build {
   val fleetSettings = Seq(
     libraryDependencies ++= Seq(
       akka,
-      guava
-    )
+      guava,
+      scalaz
+    ),
+    resolvers ++= fleetResolvers
   )
 
 
