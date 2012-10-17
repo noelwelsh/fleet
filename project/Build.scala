@@ -15,7 +15,7 @@ object FleetBuild extends Build {
   )
 
   lazy val scalaz        = "org.scalaz"              %% "scalaz-core"     % "7.0-SNAPSHOT"
-  lazy val specs2        = "org.specs2"              %% "specs2"          % "1.8.1"
+  lazy val specs2        = "org.specs2"              %% "specs2"          % "1.12.2"
   lazy val scalacheck    = "org.scala-tools.testing" %% "scalacheck"      % "1.9"
   lazy val guava         = "com.google.guava"        %  "guava"           % "12.0"
   lazy val akka          = "com.typesafe.akka"       %  "akka-actor"      % "2.0.2"
@@ -24,7 +24,8 @@ object FleetBuild extends Build {
     libraryDependencies ++= Seq(
       akka,
       guava,
-      scalaz
+      scalaz,
+      specs2 % "test"
     ),
     resolvers ++= fleetResolvers
   )

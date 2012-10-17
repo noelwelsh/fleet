@@ -11,7 +11,7 @@ import scalaz.std.option._
  *
  * This implementation uses mutable state, so be careful with sharing etc.
  *
- * This is not a correct implementation of the Stream Summary algorithm.
+ * This is not a correct implementation of the Stream Summary data structure.
  * There should be a two level tree which allows faster increments of elements.
  */
 class SpaceSaver[A](val capacity: Int) {
@@ -22,6 +22,7 @@ class SpaceSaver[A](val capacity: Int) {
 
   /** Add one count for the item */
   def +(item: A): Unit = {
+    println("adding "+item+" to "+bucketsHead)
     elements.get(item) match {
       case Some(elt) =>
         // increment count, bubble up bucketsHead, possibly reset bucketsHead to new bucket
@@ -56,13 +57,10 @@ class SpaceSaver[A](val capacity: Int) {
 
   /** Gets the top k items (or fewer if we haven't stored k) */
   def top(k: Int): Seq[(A, Int)] = {
-    if(bucketsHead == null) {
-      Seq()
-    } else {
-      val selected = (if(k > usage) bucketsHead else (bucketsHead.drop(usage - k)))
-      selected.foldLeft(Seq[(A, Int)]()){
-        (accum, elem) => (elem.elem, elem.count) +: accum
-      }
+    println("have "+bucketsHead+" asked for "+k+" usage is "+usage+" dropping "+(usage - k)+" giving "+bucketsHead.drop(usage - k))
+    val selected = (if(k > usage) bucketsHead else (bucketsHead.drop(usage - k)))
+    selected.foldLeft(Seq[(A, Int)]()){
+      (accum, elem) => (elem.elem, elem.count) +: accum
     }
   }
 
@@ -75,20 +73,28 @@ class SpaceSaver[A](val capacity: Int) {
   val elements: Map[A, DoubleLinkedList[Element[A]]] = Map()
 
   /** The head (lowest count) element of the bucket doubly-linked list */
-  var bucketsHead: DoubleLinkedList[Element[A]] = null
+  var bucketsHead: DoubleLinkedList[Element[A]] = new DoubleLinkedList()
 
   /** Assumes elt is already positioned in a sorted list. Sets elt to its correct position, assuming counts only increase */
   @tailrec final def insert(elt: DoubleLinkedList[Element[A]]): Unit = {
-    if(elt.next == null)
+    if(elt.next.next == elt.next)
       () // We've reached the end of the list
-    if(elt.elem.count <= elt.next.elem.count)
+    else if(elt.elem.count <= elt.next.elem.count)
       () // It's in the correct position
     else { // Move up one
       val next = elt.next
-      next.prev = elt.prev
+      val nextNext = next.next
+      val prev = elt.prev
+
       elt.prev = next
-      elt.next = next.next
+      elt.next = nextNext
+
+      next.prev = prev
       next.next = elt
+
+      // prev can be null if elt is the head of the list
+      if(prev != null) prev.next = next
+
       insert(elt)
     }
   }
