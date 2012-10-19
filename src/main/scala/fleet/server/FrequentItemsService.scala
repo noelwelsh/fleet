@@ -17,11 +17,16 @@ import scalaz.Validation
 
 
 // Example server implementing frequent item countings
-
+//
+// Send to /update
+//
+// Send Json like {"uuid":"auuid", "count": 2}
+//
+// Get stats from /view
 class FrequentItemsService extends Actor with HttpService with SprayJsonSupport with DefaultJsonProtocol {
 
-  case class Uuid(uuid: String)
-  implicit val uuidFormat = jsonFormat1(Uuid.apply)
+  case class Counter(uuid: String, count: Int)
+  implicit val counterFormat = jsonFormat2(Counter.apply)
 
   val capacity = 1000 // Hard-code for now
   val spaceSaver = new SpaceSaver[String](1000)
@@ -39,7 +44,8 @@ class FrequentItemsService extends Actor with HttpService with SprayJsonSupport 
         entity(as[String]) {
           json => {
             ctx => {
-              spaceSaver += json.asJson.convertTo[Uuid].uuid
+              val counter = json.asJson.convertTo[Counter]
+              for(i <- 0 until counter.count) { spaceSaver += counter.uuid }
               ctx.complete(okResponse)
             }
           }

@@ -22,7 +22,6 @@ class SpaceSaver[A](val capacity: Int) extends Accumulator[A] {
 
   /** Add one count for the item */
   def +=(item: A): Unit = {
-    println("adding "+item+" to "+bucketsHead)
     elements.get(item) match {
       case Some(elt) =>
         // increment count, bubble up bucketsHead, possibly reset bucketsHead to new bucket
@@ -57,7 +56,6 @@ class SpaceSaver[A](val capacity: Int) extends Accumulator[A] {
 
   /** Gets the top k items (or fewer if we haven't stored k) */
   def top(k: Int): Seq[(A, Int)] = {
-    println("have "+bucketsHead+" asked for "+k+" usage is "+usage+" dropping "+(usage - k)+" giving "+bucketsHead.drop(usage - k))
     val selected = (if(k > usage) bucketsHead else (bucketsHead.drop(usage - k)))
     selected.foldLeft(Seq[(A, Int)]()){
       (accum, elem) => (elem.elem, elem.count) +: accum

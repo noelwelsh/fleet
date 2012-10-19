@@ -11,7 +11,7 @@ class SpaceSaverSpec extends Specification {
       val spaceSaver = new SpaceSaver[String](5)
       val data = Seq("X", "X", "Y", "Z", "A", "B", "A", "C", "X", "X", "A", "A", "A", "C")
 
-      data.foreach(spaceSaver + _)
+      data.foreach(spaceSaver += _)
 
       spaceSaver.top(3) mustEqual Seq(("A", 5), ("X", 4), ("C", 2))
     }
@@ -20,7 +20,7 @@ class SpaceSaverSpec extends Specification {
       val spaceSaver = new SpaceSaver[String](3)
       val data = Seq("X", "X", "Y", "Z", "A", "B", "A", "C", "X", "X", "A", "A", "A", "C")
 
-      data.foreach(spaceSaver + _)
+      data.foreach(spaceSaver += _)
 
       spaceSaver.top(3) mustEqual Seq(("X", 4), ("A", 3), ("C", 1))
     }
