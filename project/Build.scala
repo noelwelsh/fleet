@@ -20,8 +20,8 @@ object FleetBuild extends Build {
   lazy val scalacheck    = "org.scala-tools.testing" %% "scalacheck"      % "1.9"
   lazy val guava         = "com.google.guava"        %  "guava"           % "12.0"
   lazy val akka          = "com.typesafe.akka"       %  "akka-actor"      % "2.0.3"
-  lazy val sprayCan      = "io.spray"                %  "spray-can"       % "1.0"
-  lazy val sprayRouting  = "io.spray"                %  "spray-routing"   % "1.0"
+  lazy val sprayCan      = "io.spray"                %  "spray-can"       % "1.0-M3"
+  lazy val sprayRouting  = "io.spray"                %  "spray-routing"   % "1.0-M3"
   lazy val sprayJson     = "io.spray"                %  "spray-json"      % "1.2.2" cross CrossVersion.full
 
 

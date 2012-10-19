@@ -14,14 +14,14 @@ import scalaz.std.option._
  * This is not a correct implementation of the Stream Summary data structure.
  * There should be a two level tree which allows faster increments of elements.
  */
-class SpaceSaver[A](val capacity: Int) {
+class SpaceSaver[A](val capacity: Int) extends Accumulator[A] {
 
   case class Element[A](var count: Int, val elem: A)
 
   // Interface
 
   /** Add one count for the item */
-  def +(item: A): Unit = {
+  def +=(item: A): Unit = {
     println("adding "+item+" to "+bucketsHead)
     elements.get(item) match {
       case Some(elt) =>
