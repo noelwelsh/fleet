@@ -14,15 +14,15 @@ import scalaz.std.option._
  * This is not a correct implementation of the Stream Summary data structure.
  * There should be a two level tree which allows faster increments of elements.
  */
-class SpaceSaver[A](val capacity: Int) {
+class SpaceSaver[A](val capacity: Int) extends Sink[A] {
 
   case class Element[A](var count: Int, val elem: A)
 
   // Interface
 
   /** Add one count for the item */
-  def +(item: A): Unit = {
-    println("adding "+item+" to "+bucketsHead)
+  def add(item: A): Unit = {
+    //println("adding "+item+" to "+bucketsHead)
     elements.get(item) match {
       case Some(elt) =>
         // increment count, bubble up bucketsHead, possibly reset bucketsHead to new bucket
@@ -56,8 +56,8 @@ class SpaceSaver[A](val capacity: Int) {
   }
 
   /** Gets the top k items (or fewer if we haven't stored k) */
-  def top(k: Int): Seq[(A, Int)] = {
-    println("have "+bucketsHead+" asked for "+k+" usage is "+usage+" dropping "+(usage - k)+" giving "+bucketsHead.drop(usage - k))
+  def top(k: Int = usage): Seq[(A, Int)] = {
+    //println("have "+bucketsHead+" asked for "+k+" usage is "+usage+" dropping "+(usage - k)+" giving "+bucketsHead.drop(usage - k))
     val selected = (if(k > usage) bucketsHead else (bucketsHead.drop(usage - k)))
     selected.foldLeft(Seq[(A, Int)]()){
       (accum, elem) => (elem.elem, elem.count) +: accum
