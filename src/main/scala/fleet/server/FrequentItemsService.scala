@@ -1,24 +1,64 @@
 package fleet.server
 
-import akka.actor.{Props, ActorSystem}
-import spray.can.server.HttpServer
+import akka.actor._
+import fleet.frequent.SpaceSaver
+import spray.can.server._
 import spray.io._
-import spray.json._
 import spray.routing._
+import spray.json._
+import spray.http._
+import spray.httpx.marshalling._
+import spray.httpx.unmarshalling._
+import spray.httpx.SprayJsonSupport
+import StatusCodes._
+import HttpHeaders._
+import MediaTypes._
+import scalaz.Validation
+
 
 // Example server implementing frequent item countings
+//
+// Send to /update
+//
+// Send Json like {"uuid":"auuid", "count": 2}
+//
+// Get stats from /view
+class FrequentItemsService extends Actor with HttpService with SprayJsonSupport with DefaultJsonProtocol {
 
-class FrequentItemsService extends Service {
+  case class Counter(uuid: String, count: Int)
+  implicit val counterFormat = jsonFormat2(Counter.apply)
 
   val capacity = 1000 // Hard-code for now
-  val spaceSaver = new SpaceSaver(1000)
+  val spaceSaver = new SpaceSaver[String](1000)
 
-  def handler(in: JsValue) =
+  val okResponse = HttpResponse(status = OK)
+  val notFoundResponse = HttpResponse(status = NotFound)
 
-  // Convert to a tuple (case class) uuid x count
-  // Update
+  def actorRefFactory = context
 
-  // String
+  def receive = runRoute(route)
+
+  def route =
+    post {
+      path("update") {
+        entity(as[String]) {
+          json => {
+            ctx => {
+              val counter = json.asJson.convertTo[Counter]
+              for(i <- 0 until counter.count) { spaceSaver += counter.uuid }
+              ctx.complete(okResponse)
+            }
+          }
+        }
+      }
+    } ~
+    get {
+      path("view") {
+        ctx => {
+          spaceSaver.top(capacity).toJson
+        }
+      }
+    }
 
 }
 
