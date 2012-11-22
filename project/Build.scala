@@ -11,7 +11,7 @@ object FleetBuild extends Build {
     "Sonatype Snap" at "http://oss.sonatype.org/content/repositories/snapshots",
     "JBoss"         at "http://repository.jboss.org/nexus/content/groups/public",
     "Untyped"       at "http://repo.untyped.com/",
-    "Typesafe"      at "http://repo.typesafe.com/typesafe/releases/",
+    "Typesafe"      at "http://repo.typesafe.com/typesafe/releases/"
   )
 
   lazy val scalaz        = "org.scalaz"              %% "scalaz-core"     % "7.0-SNAPSHOT"
@@ -19,9 +19,9 @@ object FleetBuild extends Build {
   lazy val scalacheck    = "org.scala-tools.testing" %% "scalacheck"      % "1.9"
   lazy val guava         = "com.google.guava"        %  "guava"           % "12.0"
   lazy val akka          = "com.typesafe.akka"       %  "akka-actor"      % "2.0.2"
-  lazy val blueeyesCore  = "com.github.jdegoes"      %% "blueeyes-core"   % "0.6.1-SNAPSHOT"
-  lazy val blueeyesMongo = "com.github.jdegoes"      %% "blueeyes-mongo"  % "0.6.1-SNAPSHOT"
-  lazy val blueeyesJson  = "com.github.jdegoes"      %% "blueeyes-json"   % "0.6.1-SNAPSHOT"
+  lazy val blueeyesCore  = "com.github.jdegoes"      %  "blueeyes-core_2.9.1"   % "0.6.1-SNAPSHOT"
+  lazy val blueeyesMongo = "com.github.jdegoes"      %  "blueeyes-mongo_2.9.1"  % "0.6.1-SNAPSHOT"
+  lazy val blueeyesJson  = "com.github.jdegoes"      %  "blueeyes-json_2.9.1"   % "0.6.1-SNAPSHOT"
 
 
   val fleetSettings = Seq(
