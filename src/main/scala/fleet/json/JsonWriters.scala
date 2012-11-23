@@ -1,17 +1,18 @@
 package fleet
 package json
 
-import bigtop.json.JsonWriter
+import bigtop.json.{JsonFormatters, JsonWriter}
 import blueeyes.json.JsonAST._
 import blueeyes.json.JsonDSL._
+import fleet.frequent.SpaceSaver
 
-trait JsonWriters {
+trait JsonWriters extends JsonFormatters {
 
   implicit def spaceSaverWriter[A](implicit itemWriter: JsonWriter[A]): JsonWriter[SpaceSaver[A]] = new JsonWriter[SpaceSaver[A]] {
 
     def write(in: SpaceSaver[A]): JValue = {
       val items = in.top()
-      in.map {
+      items.map {
         case (item, count) => ("item" -> item.toJson) ~ ("count" -> count)
       }
     }
