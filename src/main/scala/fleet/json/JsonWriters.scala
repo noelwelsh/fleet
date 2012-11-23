@@ -22,10 +22,32 @@ trait JsonWriters extends JsonFormatters {
 
   }
 
-  implicit def counterWriter: JsonWriter[Counter] = new JsonWriter[Counter] {
+  implicit val counterWriter: JsonWriter[Counter] = new JsonWriter[Counter] {
 
     def write(in: Counter): JValue = {
       ("typename" -> "counter") ~ ("count" -> in.count)
+    }
+
+  }
+
+  implicit def accumWriter[A](implicit itemWriter: JsonWriter[A]): JsonWriter[Accumulator[A]] = new JsonWriter[Accumulator[A]] {
+
+    def write(in: Accumulator[A]): JValue = {
+      in match {
+        case counter:Counter =>
+          counterWriter.write(counter)
+        case spaceSaver:SpaceSaver[A] =>
+          spaceSaverWriter(itemWriter).write(spaceSaver)
+        case AccumulatorNull() =>
+          (JArray.empty : JValue)
+        case AccumulatorPair(head, tail) => {
+          (this.write(head), this.write(tail)) match {
+            case (obj@JObject(f1), JArray(f2))  => JArray(obj +: f2)
+            case (JArray(f1),      JArray(f2))  => JArray(f1 ++ f2)
+            case bad => sys.error("accumWriter expected JObject or JArray but got " + bad)
+          }
+        }
+      }
     }
 
   }

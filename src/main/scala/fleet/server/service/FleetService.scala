@@ -2,6 +2,7 @@ package fleet
 package server
 package service
 
+import akka.actor.ActorSystem
 import akka.dispatch.{Future, Promise}
 import blueeyes.{BlueEyesServiceBuilder, BlueEyesServer}
 import blueeyes.core.http.{HttpRequest, HttpResponse, HttpStatus}
@@ -14,10 +15,15 @@ import bigtop.json.JsonFormatters
 import bigtop.problem._
 import com.weiglewilczek.slf4s.Logger
 import fleet.server.action.{Action, FrequentItemAction}
+import org.streum.configrity.Configuration
+import scala.collection.JavaConversions._
 import scalaz.Validation
 import scalaz.syntax.validation._
 
-case class FleetConfig()
+case class FleetConfig(config: Configuration) {
+  val akkaConfig = com.typesafe.config.ConfigFactory.parseMap(config.detach("agents").data)
+
+}
 
 trait FleetService extends BlueEyesServiceBuilder
   with JsonRequestHandlerCombinators
@@ -28,8 +34,9 @@ trait FleetService extends BlueEyesServiceBuilder
   with SafeBijectionsChunkFutureJson
 {
   implicit val log: Logger
+  implicit val system: ActorSystem = ActorSystem("fleet")
 
-  val frequentItems: Action = new FrequentItemAction {}
+  val frequentItems: Action = new FrequentItemAction(system)
 
   def dispatch(key: String): Validation[Problem, Action] = {
     key match {
@@ -42,7 +49,7 @@ trait FleetService extends BlueEyesServiceBuilder
     service("fleet", "1.0.0") {
       context =>
         startup {
-          Promise.successful(FleetConfig())
+          Promise.successful(FleetConfig(context.config))
         } ->
         request {
           config: FleetConfig => {
