@@ -19,10 +19,7 @@ class Timebox[A](create: => Accumulator[A], period: Duration, scheduler: Schedul
 
 object Timebox {
 
-  def apply[A](period: Duration, scheduler: Scheduler)(create: => Accumulator[A]): Timebox[A] =
+  def apply[A](period: Duration)(create: => Accumulator[A])(implicit scheduler: Scheduler): Timebox[A] =
     new Timebox(create, period, scheduler)
-
-  def apply[A](period: Duration, system: ActorSystem)(create: => Accumulator[A]): Timebox[A] =
-    this.apply(period, system.scheduler)(create)
 
 }

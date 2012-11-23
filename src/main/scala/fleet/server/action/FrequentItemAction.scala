@@ -16,13 +16,15 @@ import scalaz.syntax.validation._
 
 class FrequentItemAction(system: ActorSystem) extends Action with JsonWriters with FutureImplicits with JsonFormatters {
 
+  implicit val scheduler = system.scheduler
+
   def create = new SpaceSaver[Uuid](1000)
 
   val sink: Accumulator[Uuid] =
-    Timebox(1 minutes, system) { create } +:
-    Timebox(15 minutes, system) { create } +:
-    Timebox(1 hour, system) { create } +:
-    Timebox(1 day, system) { create }
+    Timebox(1 minutes) { create } +:
+    Timebox(15 minutes) { create } +:
+    Timebox(1 hour) { create } +:
+    Timebox(1 day) { create }
 
 
 
