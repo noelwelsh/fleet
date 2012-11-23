@@ -47,4 +47,30 @@ object FleetBuild extends Build {
     fleetSettings : _*
   )
 
+  lazy val bigtopCore = Project(
+    id = "bigtop-core",
+    base = file("bigtop/core")
+  ).settings(
+    Project.defaultSettings ++
+    mynaSettings ++
+    blueeyesSettings ++
+    Seq(
+      exportJars := true
+    ) : _*
+  )
+
+  lazy val bigtopUtil = Project(
+    id = "bigtop-util",
+    base = file("bigtop/util")
+  ).settings(
+    Project.defaultSettings ++
+    mynaSettings ++
+    blueeyesSettings ++
+    Seq(
+      exportJars := true
+    ) : _*
+  ).dependsOn(
+    bigtopCore
+  )
+
 }
